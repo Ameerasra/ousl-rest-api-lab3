@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: ous1-project
+        working-directory: student
 
     steps:
       # Step 1: Get source code from GitHub
@@ -70,7 +70,7 @@ jobs:
       - name: Push Container Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_NAME: ousl-student-api
+          IMAGE_NAME: 
         run: |
           docker tag $IMAGE_NAME:${{ github.sha }} $ECR_REGISTRY/$IMAGE_NAME:${{ github.sha }}
           docker push $ECR_REGISTRY/$IMAGE_NAME:${{ github.sha }}
