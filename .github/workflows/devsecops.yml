@@ -21,7 +21,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
         with:
-          ref: main
+          fetch-depth: 0
 
       # Step 2: Set up Java 21
       - name: Set up JDK 21
@@ -36,11 +36,10 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
+          mvn -B verify sonar:sonar \
           -Dsonar.projectKey=ousl-student-service \
           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
-          -Dsonar.host.url=https://sonarcloud.io
-
+          
       # Step 4: Build Docker image
       - name: Build Container
         run: docker build -t ousl-student-api:${{ github.sha }} .
