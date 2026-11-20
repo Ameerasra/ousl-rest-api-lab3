@@ -40,7 +40,14 @@ jobs:
             -Dsonar.projectKey=ousl-student-service \
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=https://sonarcloud.io
-                
+
+      - name: Display Test Failure Details
+        if: always()
+        run: |
+          echo "===== TEST REPORTS ====="
+          ls -la target/surefire-reports/
+          echo "===== FAILURE DETAILS ====="
+          cat target/surefire-reports/*.txt      
           
       # Step 4: Build Docker image
       - name: Build Container
