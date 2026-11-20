@@ -14,7 +14,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: student
+        working-directory: ous1-project
 
     steps:
       # Step 1: Get source code from GitHub
@@ -35,11 +35,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: |
-          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
-          -Dsonar.projectKey=ousl-student-service \
-          -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
-          -Dsonar.host.url=https://sonarcloud.io
+        run: >
+          mvn -B verify sonar:sonar
+          -Dsonar.projectKey=ousl-student-service
+          -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }}
 
       # Step 4: Build Docker image
       - name: Build Container
@@ -51,7 +50,7 @@ jobs:
         with:
           image-ref: ousl-student-api:${{ github.sha }}
           format: table
-          exit-code: '0'
+          exit-code: '1'
           severity: CRITICAL
 
       # Step 6: Configure AWS credentials
@@ -71,6 +70,7 @@ jobs:
       - name: Push Container Image to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_NAME: ousl-student-api
         run: |
-          docker tag ousl-student-api:${{ github.sha }} $ECR_REGISTRY/ousl-student-api:${{ github.sha }}
-          docker push $ECR_REGISTRY/ousl-student-api:${{ github.sha }}
+          docker tag $IMAGE_NAME:${{ github.sha }} $ECR_REGISTRY/$IMAGE_NAME:${{ github.sha }}
+          docker push $ECR_REGISTRY/$IMAGE_NAME:${{ github.sha }}
