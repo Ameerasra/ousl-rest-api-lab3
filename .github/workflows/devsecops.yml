@@ -12,6 +12,10 @@ jobs:
   build-and-secure:
     runs-on: ubuntu-latest
 
+    defaults:
+      run:
+        working-directory: student
+
     steps:
       # Step 1: Get source code from GitHub
       - name: Checkout Code
@@ -47,7 +51,7 @@ jobs:
           -Dsonar.projectKey=ousl-student-service \
           -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
           -Dsonar.host.url=https://sonarcloud.io
-          
+
       # Step 4: Build Docker image
       - name: Build Container
         run: docker build -t ousl-student-api:${{ github.sha }} .
