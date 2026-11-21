@@ -63,7 +63,7 @@ jobs:
           SPRING_DATASOURCE_PASSWORD: testpassword
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
-            -Dsonar.projectKey=ousl-student-service \
+            -Dsonar.projectKey=Ameerasra_ousl-rest-api-lab3 \
             -Dsonar.organization=${{ vars.SONAR_ORGANIZATION }} \
             -Dsonar.host.url=https://sonarcloud.io
 
