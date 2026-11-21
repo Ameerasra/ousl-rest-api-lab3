@@ -45,11 +45,22 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres -d ousl_db && exit 0
+            sleep 2
+          done
+          exit 1
+
       # Step 3: SonarCloud security and code quality scan
       - name: SonarCloud SAST Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/ousl_db?sslmode=disable
+          SPRING_DATASOURCE_USERNAME: postgres
+          SPRING_DATASOURCE_PASSWORD: testpassword
         run: |
           mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:5.2.0.4988:sonar \
             -Dsonar.projectKey=ousl-student-service \
